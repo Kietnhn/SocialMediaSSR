@@ -1,0 +1,71 @@
+<nav class="col-md-3 col-lg col-2-5 d-md-block sidebar d-none" id="aside">
+    <div class="position-fixed top-0 bottom-0 card p-0" id="sidebar">
+        <div class="d-flex flex-column h-100 py-4">
+            <div class="flex-grow-1 list-group">
+                <a
+                    class="list-group-item list-group-item-action <%= currentRoute === '/' ? 'active' : '' %>"
+                    href="/"
+                >
+                    <i
+                        class="bi mr-2 <%= currentRoute === '/' ? ' bi-house-door-fill' : ' bi-house-door ' %>"
+                    ></i>
+                    <span class=""> Home </span>
+                </a>
+                <a
+                    class="list-group-item list-group-item-action <%= currentRoute === '/about' ? 'active' : '' %>"
+                    href="#"
+                >
+                    <i class="fas icon fa-info-circle"></i>
+                    <span class=""> About </span>
+                </a>
+                <a
+                    class="list-group-item list-group-item-action <%= currentRoute === '/bookmark' ? 'active' : '' %>"
+                    href="/bookmark"
+                >
+                    <i
+                        class="bi mr-2 <%= currentRoute === '/bookmark' ? ' bi-bookmark-fill' : 'bi-bookmark' %>"
+                    ></i>
+                    <span class=""> Bookmarks </span>
+                </a>
+                <a
+                    class="list-group-item list-group-item-action <%= currentRoute === '/profile' ? 'active' : '' %>"
+                    href="/profile"
+                >
+                    <i
+                        class="bi mr-2 <%= currentRoute === '/profile' ? ' bi-person-fill' : 'bi-person' %>"
+                    ></i>
+                    <span class=""> Profile </span>
+                </a>
+                <a
+                    class="list-group-item list-group-item-action <%= currentRoute === '/contact' ? 'active' : '' %>"
+                    href="#"
+                >
+                    <i class="fas icon fa-envelope"></i>
+                    <span class=""> Contact </span>
+                </a>
+                <a
+                    class="list-group-item list-group-item-action <%= currentRoute === '/setting' ? 'active' : '' %>"
+                    href="/setting"
+                >
+                    <i
+                        class="bi mr-2 bi mr-2 <%= currentRoute === '/setting' ? ' bi-gear-fill' : 'bi-gear' %>"
+                    ></i>
+                    <span class=""> Setting </span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a
+                    href="/posts/add"
+                    class="list-group-item list-group-item-action"
+                >
+                    <div
+                        class="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+                    >
+                        <i class="bi bi-plus-lg mr-2"></i>
+                        Post
+                    </div>
+                </a>
+            </div>
+            <div class=""><%- include("./CurrentUser.ejs") %></div>
+        </div>
+    </div>
+</nav>

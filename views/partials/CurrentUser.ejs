@@ -1,0 +1,43 @@
+<div class="current-user">
+    <div class="dropup">
+        <div
+            class="dropdown-toggle d-flex is-align-items-center justify-content-between px-2 gap-1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+        >
+            <figure class="image is-40x40 position-relative mb-0">
+                <img class="is-rounded box" src="<%=currentUser.avatar?.url ||
+                "/image/no-avatar.png"%>" />
+            </figure>
+            <div class="d-flex flex-column">
+                <h3 class="subtitle fw-bold is-6 mb-0" style="color: inherit">
+                    <%= currentUser.displayName %>
+                </h3>
+                <h6
+                    class="title is-6 fw-normal d-none d-xl-block mb-0 mt-0"
+                    style="color: inherit"
+                >
+                    <%= currentUser.email %>
+                </h6>
+            </div>
+            <div>
+                <button class="btn-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </button>
+            </div>
+        </div>
+        <ul class="dropdown-menu box dropdown-menu-top-middle">
+            <li>
+                <a
+                    href="/user/logout"
+                    class="d-flex is-align-items-center gap-2 text-danger dropdown-item"
+                    style="font-weight: 600"
+                >
+                    <i class="bi bi-box-arrow-left" style="font-size: 22px"></i>
+                    Logout
+                </a>
+            </li>
+            <!-- Dropdown menu links -->
+        </ul>
+    </div>
+</div>

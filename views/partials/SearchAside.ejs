@@ -1,0 +1,28 @@
+<div class="position-sticky bottom-0 end-0" style="top: 16px">
+    <form action="/search" method="GET" onsubmit="return validateSearchForm()">
+        <div class="input-group flex-nowrap">
+            <div class="position-relative flex-grow-1">
+                <input
+                    value="<%= query %>"
+                    type="text"
+                    class="form-control"
+                    placeholder="Searching ..."
+                    name="search"
+                    id="search"
+                />
+                <% if (query.trim() ) { %>
+                <button
+                    type="button"
+                    class="btn-icon position-absolute end-0 top-50 translate-middle-y"
+                    onclick="handleClearInputSearch()"
+                >
+                    <i class="bi bi-x"></i>
+                </button>
+                <% } %>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
+</div>

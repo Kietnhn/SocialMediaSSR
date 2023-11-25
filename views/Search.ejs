@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%-include('./partials/Head') %>
+
+        <link rel="stylesheet" href="/css/createPost.css" />
+        <link rel="stylesheet" href="/css/home.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <%- include('./partials/Aside.ejs')%>
+                <main
+                    class="col-12 col-9-5 ms-sm-auto col-lg-7 px-md-4 min-vh-100 pt-lg-4 pe-md-0"
+                    id="search-results"
+                >
+                    <div
+                        class="d-flex justify-content-between align-items-center gap-3 mb-3"
+                    >
+                        <button
+                            class="btn btn-outline-secondary"
+                            onclick="window.history.back()"
+                        >
+                            <i class="bi bi-arrow-bar-left"></i>
+                        </button>
+                        <div class="position-relative flex-grow-1">
+                            <%- include('./partials/SearchAside',{query:
+                            query})%>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <% if(result.length > 0){ %> <%
+                                result.forEach((user) => { %>
+                                <a
+                                    href="/profile/user/<%= user._id %>"
+                                    class="list-group-item list-group-item-action d-flex align-items-center justify-content-start gap-2"
+                                >
+                                    <figure class="image is-40x40">
+                                        <img class="is-rounded box mb-0"
+                                        src="<%=user.avatar?.url ||
+                                        "/image/no-avatar.png"%>" style="height:
+                                        100%;object-fit: cover" />
+                                    </figure>
+                                    <div class="post-content">
+                                        <strong>
+                                            <%= user.displayName %>
+                                        </strong>
+                                        <p class="text-secondary">
+                                            <%= user.email %>
+                                        </p>
+                                    </div>
+                                </a>
+
+                                <% }) %> <% } else{ %>
+                                <li class="list-group-item">
+                                    No result of <strong><%=query%></strong>
+                                </li>
+
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <div
+                class="d-block d-md-none position-fixed bottom-0 start-0 end-0 mobile-menu"
+                id="mobile-menu"
+            >
+                <div
+                    class="d-flex align-items-center bg-transparent justify-content-end p-2 mb-3"
+                >
+                    <button class="btn-add-post btn-primary">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div
+                    class="d-flex align-items-center bg-light justify-content-evenly pt-2"
+                >
+                    <a href="/" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/' ? ' bi-house-door-fill' : ' bi-house-door' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/search' ? ' bi-search-fill' : ' bi-search' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/group' ? ' bi-people-fill' : ' bi-people' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/notifications' ? ' bi-bell-fill' : ' bi-bell' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/chats' ? 'bi-chat-left-text-fill' : 'bi-chat-left-text' %>"
+                        ></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <%- include("./partials/Script.ejs") %>
+        <script src="/js/aside.js"></script>
+        <script src="/js/mobile-home.js"></script>
+        <script src="/js/home.js"></script>
+    </body>
+</html>

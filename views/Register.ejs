@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <%-include('./partials/Head') %>
+        <link rel="stylesheet" href="/css/login.css" />
+        <link rel="stylesheet" href="/css/createPost.css" />
+    </head>
+    <body>
+        <div class="fullscreen">
+            <div class="login__container">
+                <div
+                    class="login__wrapper box row flex-row justify-content-between"
+                >
+                    <div class="col-6">
+                        <h2 class="title is-2">Welcome to Page</h2>
+                        <figure class="image">
+                            <img
+                                width="100%"
+                                height="100%"
+                                src="/image/android-chrome-512x512.png"
+                                alt="logo"
+                            />
+                        </figure>
+                    </div>
+                    <div class="login__form__wrapper col-6">
+                        <h2 class="subtitle is-3">Register now</h2>
+
+                        <form
+                            class="row g-2 w-100"
+                            id="register-form"
+                            action="/user/register"
+                            method="POST"
+                        >
+                            <div class="col-12">
+                                <label for="email" class="form-label"
+                                    >Email</label
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control <%= errors.find(e => e.path === 'email') ? 'is-invalid' : '' %>"
+                                    id="email"
+                                    name="email"
+                                    aria-describedby="email-feeadback"
+                                    value="<%= oldInputs.email %>"
+                                />
+
+                                <div
+                                    id="email-feeadback"
+                                    class="invalid-feedback"
+                                >
+                                    <%= errors.find(e => e.path ===
+                                    'email')?.msg || '' %>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="password" class="form-label"
+                                    >Password</label
+                                >
+                                <div
+                                    class="position-relative input-group form-input"
+                                >
+                                    <input
+                                        type="password"
+                                        class="form-control <%= errors.find(e => e.path === 'password') ? 'is-invalid' : '' %>"
+                                        id="password"
+                                        name="password"
+                                        aria-describedby="passwordFeedback"
+                                        value="<%= oldInputs.password %>"
+                                    />
+                                    <span class="input-group-text">
+                                        <button
+                                            class="btn-icon toggle-password"
+                                            type="button"
+                                        >
+                                            <i
+                                                class="bi bi-eye-fill bi-eye-slash-fill"
+                                            ></i>
+                                        </button>
+                                    </span>
+                                    <div
+                                        id="passwordFeedback"
+                                        class="invalid-feedback"
+                                    >
+                                        <%= errors.find(e => e.path ===
+                                        'password')?.msg || '' %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="confirm-password" class="form-label"
+                                    >Confirm Password</label
+                                >
+                                <div
+                                    class="position-relative input-group form-input"
+                                >
+                                    <input
+                                        type="password"
+                                        class="form-control <%= errors.find(e => e.path === 'confirmPassword') ? 'is-invalid' : '' %>"
+                                        id="confirm-password"
+                                        name="confirmPassword"
+                                        aria-describedby="confirm-passwordFeedback"
+                                        value="<%= oldInputs.confirmPassword %>"
+                                    />
+                                    <span class="input-group-text">
+                                        <button
+                                            class="btn-icon toggle-password"
+                                            type="button"
+                                        >
+                                            <i
+                                                class="bi bi-eye-fill bi-eye-slash-fill"
+                                            ></i>
+                                        </button>
+                                    </span>
+                                    <div
+                                        id="confirm-passwordFeedback"
+                                        class="invalid-feedback"
+                                    >
+                                        <%= errors.find(e => e.path ===
+                                        'confirmPassword')?.msg || '' %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value=""
+                                        id="agree-term"
+                                        aria-describedby="agree-termFeedback"
+                                        required
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="agree-term"
+                                    >
+                                        Agree to terms and conditions
+                                    </label>
+                                    <div
+                                        id="agree-termFeedback"
+                                        class="invalid-feedback"
+                                    >
+                                        You must agree before submitting.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button
+                                    class="btn btn-primary w-100"
+                                    id="btn-register"
+                                >
+                                    Register
+                                </button>
+                            </div>
+                            <p>
+                                Already have account?
+                                <a href="/user/login">Login</a> now
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script>
+            const handleChange = (e) => {
+                e.target.classList.remove("is-invalid");
+            };
+            $(".form-control").change(handleChange);
+            $(".form-check-input").change(handleChange);
+            const findParent = (target) => {
+                if (target.classList.contains("form-input")) {
+                    return target;
+                }
+                return findParent(target.parentElement);
+            };
+            const handleTogglePassword = (e) => {
+                const target = e.target;
+                const parent = findParent(target);
+                const input = parent.querySelector(".form-control");
+                const icon = parent.querySelector(".toggle-password i");
+                input.type = input.type === "password" ? "text" : "password";
+                icon.classList.toggle(
+                    "bi-eye-slash-fill",
+                    input.type === "password"
+                );
+            };
+            $(".toggle-password").click(handleTogglePassword);
+        </script>
+    </body>
+</html>

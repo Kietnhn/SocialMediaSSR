@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Edit Post</title>
+        <%-include('./partials/Head') %>
+        <link rel="stylesheet" href="/css/createPost.css" />
+    </head>
+    <body>
+        <div class="vw-100 vh-100 position-relative">
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form
+                            method="POST"
+                            action="/posts/edit/<%= post._id %>"
+                            enctype="multipart/form-data"
+                            id="form-edit-post"
+                        >
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit post</h5>
+                                <a href="/">
+                                    <button
+                                        type="button"
+                                        class="btn-close"
+                                    ></button>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                <div
+                                    class="auto-expand-container position-relative mb-2"
+                                >
+                                    <div class="placeholder">
+                                        What's on your mind
+                                    </div>
+                                    <div
+                                        contenteditable="true"
+                                        class="auto-expand"
+                                        id="content-editable"
+                                    ></div>
+                                </div>
+                                <input
+                                    type="text"
+                                    hidden
+                                    id="content"
+                                    name="content"
+                                />
+                                <input
+                                    type="file"
+                                    name="images"
+                                    id="imagesInput"
+                                    hidden
+                                    multiple
+                                />
+                                <div class="imagePreviews"></div>
+                                <div class="box level is-align-items-center">
+                                    <div class="level-left">
+                                        <p class="title is-6 m-0 feature-title">
+                                            Add to your post
+                                        </p>
+                                    </div>
+                                    <div class="level-right">
+                                        <button
+                                            type="button"
+                                            class="btn-icon"
+                                            id="btn-open-file"
+                                            onclick="openFileDialog()"
+                                        >
+                                            <i
+                                                class="fas fa-image fa-lg"
+                                                style="color: #45bd62"
+                                            ></i>
+                                        </button>
+                                        <button type="button" class="btn-icon">
+                                            <i
+                                                class="fas fa-user-tag fa-lg"
+                                                style="color: #1877f2"
+                                            ></i>
+                                        </button>
+                                        <button type="button" class="btn-icon">
+                                            <i
+                                                class="fas fa-face-smile fa-lg"
+                                                style="color: #f7b928"
+                                            ></i>
+                                        </button>
+                                        <button type="button" class="btn-icon">
+                                            <i
+                                                class="fas fa-location-dot fa-lg"
+                                                style="color: #f5533d"
+                                            ></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <% if(errorMessage) {%>
+                            <div class="text-danger"><%= errorMessage%></div>
+                            <% } %>
+                            <div class="modal-footer">
+                                <a href="/">
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="btn-cancel-edit"
+                                    >
+                                        Cancel
+                                    </button>
+                                </a>
+                                <button
+                                    disabled
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    id="btn-edit-post"
+                                >
+                                    Edit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script>
+            const postContent = `<%- postContent %>`;
+            console.log({ postContent });
+            const stringPost = `<%- JSON.stringify(post) %>`;
+            console.log({ stringPost });
+            const postData = JSON.parse(stringPost);
+
+            console.log("start edit post", postData);
+            // contentEditable
+            const contentEditable = document.getElementById("content-editable");
+            let imagesFile = [...postData.images] || [];
+            let previewFiles = [...postData.images] || [];
+            const btnEdit = document.getElementById("btn-edit-post");
+            const placeholder = document.querySelector(".placeholder");
+            const content = document.getElementById("content");
+            const btnOpenFile = document.getElementById("btn-open-file");
+
+            const handleEnableToEidt = () => {
+                if (
+                    contentEditable.textContent.trim().length === 0 &&
+                    imagesFile.length === 0
+                ) {
+                    btnEdit.setAttribute("disabled", "true");
+                } else {
+                    btnEdit.removeAttribute("disabled");
+                }
+            };
+            // function sanitizeHTML(html) {
+            //     // Use a regular expression to remove HTML tags
+            //     return html.replace(/<[^>]*>/g, "");
+            // }
+            contentEditable.addEventListener("keydown", (event) => {
+                if (event.key === "Delete" || event.code === "Delete") {
+                    event.preventDefault();
+                }
+            });
+            const handleChangeInput = () => {
+                // const selection = window.getSelection();
+                // const cursorPosition = selection.getRangeAt(0).startOffset;
+                contentEditable.style.height = "auto";
+                contentEditable.style.height =
+                    contentEditable.scrollHeight + "px";
+                if (contentEditable.innerHTML.trim().length === 0) {
+                    placeholder.style.display = "block";
+                    contentEditable.classList.remove("converted");
+                } else {
+                    placeholder.style.display = "none";
+                }
+                handleEnableToEidt();
+                content.value = contentEditable.innerHTML;
+                // if (!contentEditable.classList.contains("converted")) {
+                //     console.log("sanitize");
+                //     const text = contentEditable.innerHTML;
+                //     // const sanitizedText = sanitizeHTML(text);
+                //     contentEditable.innerHTML = `<div>${text}</div>`;
+                //     contentEditable.classList.add("converted");
+
+                //     // Restore the cursor position
+                //     const range = document.createRange();
+                //     const sel = window.getSelection();
+                //     range.setStart(
+                //         contentEditable.childNodes[0],
+                //         cursorPosition
+                //     );
+                //     range.collapse(true);
+                //     sel.removeAllRanges();
+                //     sel.addRange(range);
+                // }
+            };
+            contentEditable.addEventListener("input", handleChangeInput);
+
+            contentEditable.addEventListener("paste", (event) => {
+                event.preventDefault(); // Prevent the default paste behavior
+
+                // Access the clipboard data
+                const clipboardData = (event.originalEvent || event)
+                    .clipboardData;
+
+                // Check if the clipboard data contains an image
+                if (clipboardData && clipboardData.types.includes("Files")) {
+                    const files = clipboardData.files;
+
+                    for (const file of files) {
+                        if (file.type.startsWith("image/")) {
+                            // Image detected in clipboard, prevent the default paste behavior
+                            event.preventDefault();
+                            alert("Pasting images is not allowed.");
+                            break;
+                        }
+                    }
+                }
+                const pastedText = clipboardData.getData("text/plain");
+                const formattedText = `<div>${pastedText}</div>`;
+                document.execCommand("insertHTML", false, formattedText);
+            });
+
+            // image
+            const openFileDialog = () => {
+                imagesInput.click();
+            };
+            const imagePreviews = document.querySelector(".imagePreviews");
+            const imagesInput = document.getElementById("imagesInput");
+            const renderImagePreviews = (array) => {
+                if (array.length === 0) {
+                    btnEdit.setAttribute("disabled", "true");
+
+                    imagePreviews.classList.remove("wrapper");
+                    return;
+                }
+                if (array.length === 1) {
+                    $(".images-preview-warming").html(`
+                        <div class="add-file-warming text-warning" >
+                            Make sure you select multiple files in the same time
+                            </div>
+
+                    `);
+                    setTimeout(() => {
+                        $(".add-file-warming").remove();
+                    }, 3000);
+                }
+                imagePreviews.innerHTML = ""; // Clear previous previews
+                imagePreviews.style.gridTemplateColumns = `repeat(${getTemplate(
+                    array.length
+                )},1fr)`;
+                if (array.length > 4) {
+                    btnOpenFile.setAttribute("disabled", "true");
+                } else {
+                    btnOpenFile.removeAttribute("disabled");
+                    btnEdit.removeAttribute("disabled");
+                }
+
+                array.forEach((url, index) => {
+                    $(".imagePreviews").append(`
+                    <figure class="gallery__item--${index + 1}">
+                            <button class="btn-icon btn-remove" onclick="handleRemoveImage(${index})" type="button">
+                                <i class="fas fa-xmark fa-lg"></i> 
+                            </button>
+                            <img src="${
+                                url?.url || url
+                            }" alt="image preview class="rounded" ${
+                        index + 1
+                    }" />
+                        </figure>
+                    `);
+                });
+            };
+            const handleRemoveImage = (index) => {
+                imagesFile = imagesFile.filter((_, i) => i !== index);
+                previewFiles = previewFiles.filter((_, i) => i !== index);
+                renderImagePreviews(previewFiles);
+            };
+            imagesInput.addEventListener("change", async function (event) {
+                // reset preview Files
+                previewFiles = [];
+                const files = event.target.files;
+                if (!files.length > 0) return;
+
+                imagePreviews.classList.add("wrapper");
+                imagesFile = [...files];
+                document
+                    .getElementById("btn-open-file")
+                    .removeAttribute("disabled");
+                for (const file of imagesFile) {
+                    const dataUrl = await readAsDataURL(file);
+                    previewFiles.push(dataUrl);
+                }
+                renderImagePreviews(previewFiles);
+            });
+            function readAsDataURL(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+            const getTemplate = (length) => {
+                if (length >= 3) return (length - 1) * 2;
+                return length * 2;
+            };
+
+            const addDivTagToFirstLine = (innerHTML) => {
+                const lines = innerHTML.split("<div>");
+                let firstLine = lines[0];
+                if (!firstLine || firstLine.includes("</div>")) {
+                    return innerHTML;
+                } else {
+                    firstLine = `<div>${firstLine}</div>`;
+                    const newLines = [firstLine, ...lines.slice(1)];
+                    return newLines.join("<div>").replace("<div></div>", "");
+                }
+            };
+            const formEditPost = document.getElementById("form-edit-post");
+
+            btnEdit.onclick = (e) => {
+                e.preventDefault();
+                content.value = addDivTagToFirstLine(content.value);
+                formEditPost.submit();
+            };
+            // use
+            const initial = () => {
+                contentEditable.innerHTML = postContent;
+                // contentEditable.focus();
+                handleChangeInput();
+                renderImagePreviews(imagesFile);
+            };
+            initial();
+        </script>
+    </body>
+</html>

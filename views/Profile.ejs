@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%-include('./partials/Head') %>
+
+        <link rel="stylesheet" href="/css/createPost.css" />
+        <link rel="stylesheet" href="/css/home.css" />
+        <link rel="stylesheet" href="/css/profile.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <%- include('./partials/Aside.ejs')%>
+                <main
+                    class="col-12 col-md-9 ms-sm-auto col-lg-7 px-md-4 min-vh-100 px-0"
+                >
+                    <div class="position-relative">
+                        <!-- head profile -->
+                        <div
+                            class="position-sticky top-0 start-0 end-0 card card-body mb-0"
+                            style="z-index: 9999; padding: 0.5rem"
+                        >
+                            <div
+                                class="d-flex justify-content-start align-items-center"
+                            >
+                                <button
+                                    class="btn-icon"
+                                    onclick="window.history.back()"
+                                >
+                                    <i class="bi bi-arrow-left"></i>
+                                </button>
+                                <div class="d-flex flex-column">
+                                    <h3
+                                        class="title is-4 mb-0"
+                                        style="color: inherit"
+                                    >
+                                        <%= user.displayName %>
+                                    </h3>
+                                    <p class="text-secondary">
+                                        <%= postsLength %> posts
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- user info -->
+                        <div class="card mb-3">
+                            <img src="<%= user.background?.url ||
+                            "/image/default-image.png" %>" class="card-img-top
+                            p-0 mb-0 user-background" alt="user-background" />
+                            <div class="px-3">
+                                <div
+                                    class="position-relative d-flex justify-content-end align-items-start"
+                                >
+                                    <div class="position-avatar">
+                                        <figure class="image user-avatar">
+                                            <img class="is-rounded"
+                                            src="<%=user.avatar?.url ||
+                                            "/image/no-avatar.png"%> "
+                                            style="height: 100%;object-fit:
+                                            cover" />
+                                        </figure>
+                                    </div>
+
+                                    <div class="p-3">
+                                        <% if(isOwner){ %>
+                                        <a href="/profile/edit/<%= user._id %>">
+                                            <button
+                                                class="btn btn-outline-primary"
+                                            >
+                                                Edit Profile
+                                            </button>
+                                        </a>
+                                        <% } else{ %>
+                                        <button class="btn btn-primary">
+                                            follow
+                                        </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <%= user.displayName %>
+                                </h4>
+                                <h6 class="subtitle is-6"><%= user.email %></h6>
+                                <p class="card-text">
+                                    This is a wider card with supporting text
+                                    below as a natural lead-in to additional
+                                    content. This content is a little bit
+                                    longer.
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-body-secondary"
+                                        >Last updated 3 mins ago</small
+                                    >
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="d-block d-md-none card rounded-0 position-fixed fixed-top mobile-head m-0"
+                            id="mobile-head"
+                        >
+                            <div
+                                class="d-flex justify-content-between align-items-center p-2"
+                            >
+                                <div class="avatar"></div>
+                                <div>
+                                    <a href="#">
+                                        <img
+                                            src="/image/favicon-32x32.png"
+                                            alt="mobile-logo-icon"
+                                        />
+                                    </a>
+                                </div>
+                                <div></div>
+                            </div>
+                        </div>
+
+                        <div class="pt-64 pt-lg-0" id="list-posts">
+                            <%- include('./partials/ListPost.ejs',{posts:
+                            posts,user: user }) %>
+                        </div>
+                    </div>
+                </main>
+                <nav
+                    class="col-md-3 col-lg col-2-5 sidebar pt-lg-4 d-lg-block d-sm-none"
+                    id="search-aside"
+                >
+                    <%- include('./partials/SearchAside',{query: ""})%>
+                </nav>
+            </div>
+
+            <div
+                class="d-block d-md-none position-fixed bottom-0 start-0 end-0 mobile-menu"
+                id="mobile-menu"
+            >
+                <div
+                    class="d-flex align-items-center bg-transparent justify-content-end p-2 mb-3"
+                >
+                    <button class="btn-add-post btn-primary">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div
+                    class="d-flex align-items-center justify-content-evenly pt-2"
+                >
+                    <a href="/" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/' ? ' bi-house-door-fill' : ' bi-house-door' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/search' ? ' bi-search-fill' : ' bi-search' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/group' ? ' bi-people-fill' : ' bi-people' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/notifications' ? ' bi-bell-fill' : ' bi-bell' %>"
+                        ></i>
+                    </a>
+                    <a href="#" class="btn-icon">
+                        <i
+                            class="bi <%= currentRoute === '/chats' ? 'bi-chat-left-text-fill' : 'bi-chat-left-text' %>"
+                        ></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <%- include("./partials/Script.ejs") %>
+
+        <script src="/js/aside.js"></script>
+        <script src="/js/mobile-home.js"></script>
+        <script src="/js/home.js"></script>
+    </body>
+</html>

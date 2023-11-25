@@ -1,0 +1,211 @@
+<div class="wrapper-form-comment flex-grow-1">
+    <div id="reply-info"></div>
+    <div
+        class="d-flex is-align-items-start justify-content-between gap-2 w-100"
+    >
+        <a href="/profile/user/<%= post.userId._id %>">
+            <figure class="image is-40x40">
+                <img class="is-rounded box mb-0" src="<%=post.userId.avatar?.url
+                || " /image/no-avatar.png"%>" style="height: 100%;object-fit:
+                cover" />
+            </figure>
+        </a>
+        <form
+            class="flex-grow-1"
+            id="form-comment"
+            action="/posts/post/<%= post._id%>/comments/add"
+            method="post"
+            enctype="multipart/form-data"
+        >
+            <input
+                type="text"
+                value="<%= post.numberOfComments %>"
+                hidden
+                name="numberOfComments"
+            />
+            <div class="d-flex mb-1">
+                <input
+                    type="file"
+                    name="images"
+                    id="imagesInput"
+                    hidden
+                    multiple
+                />
+                <div class="input-group flex-grow-1">
+                    <div
+                        style="z-index: 999"
+                        class="position-absolute top-0 end-0 bottom-0"
+                    >
+                        <div class="d-flex gap-1 align-items-center">
+                            <button
+                                type="button"
+                                class="btn-icon position-relative"
+                                id="btn-open-file"
+                                onclick="openFileDialog()"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="Add Images"
+                            >
+                                <i
+                                    class="fas fa-image fa-lg"
+                                    style="color: #45bd62"
+                                ></i>
+                            </button>
+                            <div class="">
+                                <button
+                                    type="button"
+                                    class="btn-icon"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    data-bs-auto-close="outside"
+                                    id="dropdownMenuClickableInside"
+                                >
+                                    <i
+                                        class="fas fa-face-smile fa-lg"
+                                        style="color: #f7b928"
+                                    ></i>
+                                </button>
+                                <ul
+                                    class="dropdown-menu dropdown-emoji"
+                                    aria-labelledby="dropdownMenuClickableInside"
+                                ></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Write a public comment…"
+                        id="comment"
+                        name="content"
+                    />
+                </div>
+
+                <div class="">
+                    <button type="submit" class="btn-icon" id="btn-comment">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="">
+                <div class="imagePreviews"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+<!--  -->
+<script>
+    const handleReplyComment = (commentId, senderName) => {
+        const replyAction = `/posts/post/<%= post._id %>/comments/reply/${commentId}`;
+        $("#form-comment").attr("action", replyAction);
+        $("#reply-info").html(`
+        <div class="d-flex align-items-center justify-content-between mb-1">
+        <p>Reply to <strong> ${senderName}</strong> </p>
+
+        <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearReplyComment()">Undo</button>
+        </div>
+        `);
+    };
+    const clearReplyComment = () => {
+        const addAction = "/posts/post/<%= post._id%>/comments/add";
+        $("#form-comment").attr("action", addAction);
+        $("#reply-info").html("");
+    };
+    (function ($) {
+        // emojis
+        const handleSelectEmoji = (emoji) => {
+            $("#comment").val($("#comment").val() + emoji.native);
+        };
+        const pickerOptions = {
+            onEmojiSelect: handleSelectEmoji,
+            autoFocusSearch: true,
+            emojiSize: 20,
+            emojiButtonSize: 26,
+            previewPosition: "none",
+        };
+        const picker = new EmojiMart.Picker(pickerOptions);
+
+        $(".dropdown-emoji").append(picker);
+
+        // image
+        const openFileDialog = () => {
+            imagesInput.click();
+        };
+        const imagePreviews = document.querySelector(".imagePreviews");
+        const imagesInput = document.getElementById("imagesInput");
+        const btnOpenFile = document.getElementById("btn-open-file");
+
+        let imagesFile = [];
+        let previewFiles = [];
+        const renderImagePreviews = (array) => {
+            imagePreviews.innerHTML = ""; // Clear previous previews
+
+            if (array.length === 0) {
+                $("#btn-comment").attr("disabled", "true");
+
+                return;
+            }
+
+            imagePreviews.style.gridTemplateColumns = `repeat(${getTemplate(
+                array.length
+            )},1fr)`;
+            if (array.length >= 2) {
+                btnOpenFile.setAttribute("disabled", "true");
+            } else {
+                btnOpenFile.removeAttribute("disabled");
+                $("#btn-comment").removeAttr("disabled");
+            }
+
+            array.forEach((url, index) => {
+                $(".imagePreviews").append(`
+                <figure class="gallery__item--${index + 1}">
+                        <button class="btn-icon btn-remove" onclick="handleRemoveImage(${index})" type="button">
+                            <i class="fas fa-xmark fa-lg"></i> 
+                        </button>
+                        <img src="${url}" alt="image preview class="rounded" ${
+                    index + 1
+                }" />
+                    </figure>
+                `);
+            });
+        };
+        const handleRemoveImage = (index) => {
+            imagesFile = imagesFile.filter((_, i) => i !== index);
+            previewFiles = previewFiles.filter((_, i) => i !== index);
+            renderImagePreviews(previewFiles);
+        };
+        imagesInput.addEventListener("change", async function (event) {
+            // reset preview Files
+            previewFiles = [];
+            let files = event.target.files;
+            console.log({ files });
+            if (!files.length > 0) return;
+            if (files.length > 2) {
+                files = [...files].slice(0, 2);
+            }
+            imagesFile = [...files];
+            document
+                .getElementById("btn-open-file")
+                .removeAttribute("disabled");
+            for (const file of imagesFile) {
+                const dataUrl = await readAsDataURL(file);
+                previewFiles.push(dataUrl);
+            }
+            renderImagePreviews(previewFiles);
+        });
+        function readAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        const getTemplate = (length) => {
+            if (length >= 3) return (length - 1) * 2;
+            return length * 2;
+        };
+    })(jQuery);
+</script>

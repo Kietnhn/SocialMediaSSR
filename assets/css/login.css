@@ -1,0 +1,42 @@
+body{
+    margin: 0;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+.fullscreen{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+.login__container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login__image{
+    width: 380px;
+    height: auto;
+}
+.icon:hover{
+    cursor: pointer;
+}
+/* form .btn-icon{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+} */
+ form .btn-icon{
+    margin: 0;
+}
+form .input-group-text{
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+.form-control.is-invalid{
+    background-image: none;
+}

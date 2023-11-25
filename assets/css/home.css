@@ -1,0 +1,148 @@
+
+.sidebar{
+    padding-left: 0;
+    padding-right: 0;
+}
+.sidebar .nav-link {
+    color: black; /* Default color is black */
+  }
+  .sidebar .nav-link:hover,
+  .sidebar .nav-item.active .nav-link {
+    color: var(--bs-blue);
+  }
+
+   .list-group-item{
+    background-color: transparent;
+    border: none;
+  }
+  @media (min-width: 992px){
+
+    .col-2-5 {
+      flex: 0 0 auto;
+      width: calc(100%/12 * 2.5);
+    }
+    .col-9-5 {
+      flex: 0 0 auto;
+      width: calc(100%/12 * 9.5);
+    }
+  }
+
+  @media screen and (max-width: 768px){
+    ::-webkit-scrollbar {
+        -webkit-appearance: none;
+    }
+  }
+a{
+  color: inherit;
+  text-decoration: none;
+}
+a:hover{
+  color: inherit;
+
+}
+.pt-64{
+  padding-top: 64px;
+}
+.form-control:focus {
+  box-shadow: none;
+}
+  .gap-1{
+    gap: 4px;
+  }
+  .gap-2{
+    gap: 8px;
+  }
+.template-col-1{
+  grid-template-columns: repeat(2,1fr);
+}
+.template-col-2{
+  grid-template-columns: repeat(4,1fr);
+
+}
+.template-col-3{
+  grid-template-columns: repeat(4,1fr);
+
+}
+.template-col-4{
+  grid-template-columns: repeat(8,1fr);
+
+}
+.card .image{
+  position: relative;
+  margin-bottom: 0;
+}
+.post-content a{
+  color: #0d6efd;
+}
+.post-content p{
+  margin-bottom: 0;
+}
+.card-wrapper:hover {
+  cursor: pointer;
+  opacity: 0.6; 
+}
+.image.is-40x40{
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+}
+.temp-image{
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: #b7b7b7;
+  border-radius: 50%;
+}
+.temp-alt{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-transform: uppercase;
+  
+}
+.card .created-at{
+  font-size: 0.8rem;
+}
+.dropend .btn-icon.dropdown-toggle::after {
+display: none;
+}
+/* mobile */
+.mobile-add-post{
+  bottom: 56px;
+  right: 16px
+}
+
+/* aside */
+.list-group-item-action i {
+  font-size: 22px;
+}
+.current-user .dropup .dropdown-toggle::after{
+  display: none;
+}
+.current-user .dropdown-menu {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.container{
+  max-width: 1250px !important;
+}
+.current-user .dropdown-menu-top-middle{
+  left: 20%!important;
+}
+@media screen and (min-width: 768px){
+  .list-group-item-action i {
+    font-size: 20px;
+  }
+}
+/* bookmark */
+.card-text-content{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+/* search */
+#search-results .card-body a{
+  color: unset;
+}

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%-include('./partials/Head') %>
+        <link rel="stylesheet" href="/css/createPost.css" />
+    </head>
+    <body>
+        <div class="container-fluid position-relative min-vh-100">
+            <div class="row">
+                <div
+                    class="col-12 col-md-9 mx-sm-auto col-lg-6 px-md-4 pt-sm-4 px-0 vh-100"
+                >
+                    <form
+                        method="POST"
+                        action="/posts/add"
+                        enctype="multipart/form-data"
+                        id="form-add-post"
+                        class="h-100 card card-body"
+                    >
+                        <div
+                            class="modal-content m-0 h-100"
+                            style="overflow: visible"
+                        >
+                            <div class="modal-header mb-1">
+                                <h5 class="modal-title">Create post</h5>
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    id="btn-close"
+                                ></button>
+                            </div>
+                            <div class="modal-body">
+                                <div
+                                    class="d-flex is-align-items-center gap-2 mb-2"
+                                >
+                                    <figure class="image is-40x40 mb-0">
+                                        <img class="is-rounded card mb-0"
+                                        src="<%=currentUser.avatar?.url ||
+                                        "/image/no-avatar.png"%>" style="height:
+                                        100%;object-fit: cover" />
+                                    </figure>
+                                    <div>
+                                        <h3
+                                            class="subtitle fw-bold is-6 mb-1"
+                                            style="color: inherit"
+                                        >
+                                            <%= currentUser.displayName %>
+                                        </h3>
+                                        <select
+                                            name="status"
+                                            class="form-select form-select-sm"
+                                            aria-label=".form-select-sm example"
+                                            style="font-size: 0.725rem"
+                                        >
+                                            <option selected value="PUBLIC">
+                                                <i class="bi bi-globe"></i>
+                                                Public
+                                            </option>
+                                            <option value="FRIEND">
+                                                <i
+                                                    class="bi bi-people-fill"
+                                                ></i>
+                                                Friend
+                                            </option>
+                                            <option value="ONLYME">
+                                                <i class="bi bi-lock-fill"></i>
+                                                Only Me
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div
+                                    class="auto-expand-container position-relative mb-2"
+                                    style="min-height: 160px"
+                                >
+                                    <div class="placeholder">
+                                        What's on your mind
+                                    </div>
+
+                                    <div
+                                        contenteditable="true"
+                                        class="auto-expand"
+                                        id="content-editable"
+                                    >
+                                        <% if (content) { %> <%- content%> <% }
+                                        %>
+                                    </div>
+                                </div>
+                                <input
+                                    type="text"
+                                    hidden
+                                    id="content"
+                                    name="content"
+                                    value="<%= content || '' %>"
+                                />
+                                <input
+                                    type="file"
+                                    name="images"
+                                    id="imagesInput"
+                                    hidden
+                                    multiple
+                                />
+                                <div class="images-preview-warming"></div>
+                                <div class="imagePreviews"></div>
+                            </div>
+                            <!-- <div class="card-body" style="flex: none"> -->
+                            <div
+                                class="card card-body flex-row level is-align-items-center"
+                                style="flex: none"
+                            >
+                                <div class="level-left">
+                                    <p
+                                        class="title is-6 m-0 feature-title"
+                                        style="color: inherit"
+                                    >
+                                        Add to your post
+                                    </p>
+                                </div>
+                                <div class="level-right align-items-center">
+                                    <button
+                                        type="button"
+                                        class="btn-icon position-relative"
+                                        id="btn-open-file"
+                                        onclick="openFileDialog()"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Add Images"
+                                    >
+                                        <i
+                                            class="fas fa-image fa-lg"
+                                            style="color: #45bd62"
+                                        ></i>
+                                    </button>
+                                    <button
+                                        class="btn-icon"
+                                        type="button"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Tag friends"
+                                    >
+                                        <i
+                                            class="fas fa-user-tag fa-lg"
+                                            style="color: #1877f2"
+                                        ></i>
+                                    </button>
+
+                                    <div class="btn-group dropup">
+                                        <button
+                                            type="button"
+                                            class="btn-icon dropdown-toggle"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            data-bs-auto-close="outside"
+                                            id="dropdownMenuClickableInside"
+                                        >
+                                            <i
+                                                class="fas fa-face-smile fa-lg"
+                                                style="color: #f7b928"
+                                            ></i>
+                                        </button>
+                                        <ul
+                                            class="dropdown-menu"
+                                            id="dropdown-emoji"
+                                            aria-labelledby="dropdownMenuClickableInside"
+                                        >
+                                            <!-- Dropdown menu links -->
+                                        </ul>
+                                    </div>
+                                    <button
+                                        class="btn-icon"
+                                        type="button"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Add location"
+                                    >
+                                        <i
+                                            class="fas fa-location-dot fa-lg"
+                                            style="color: #f5533d"
+                                        ></i>
+                                    </button>
+                                    <button
+                                        class="btn-icon"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        <i
+                                            class="bi bi-three-dots-vertical"
+                                        ></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <button
+                                                class="dropdown-item"
+                                                type="button"
+                                                id="btn-use-html-file"
+                                            >
+                                                <i
+                                                    class="fa-brands fa-html5 fa-lg mr-2"
+                                                    style="
+                                                        font-size: 24px;
+                                                        color: #f75421;
+                                                    "
+                                                ></i>
+                                                Embed HTML File
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- </div> -->
+                            <div class="modal-footer">
+                                <% if(errorMessage) {%>
+                                <div class="text-danger">
+                                    <%= errorMessage%>
+                                </div>
+                                <% } %>
+                                <button
+                                    disabled
+                                    type="submit"
+                                    class="btn btn-primary w-100"
+                                    id="btn-create-post"
+                                >
+                                    Create
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div
+            class="modal fade"
+            id="staticBackdrop"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                            Embed HTML File
+                        </h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6>
+                            You must to clean up your content to embed HTML File
+                        </h6>
+                        <p>Click "Continue" to clean up and embed HTML File</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="btn-continue"
+                        >
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include("./partials/Script.ejs") %>
+        <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+
+        <script>
+            console.log("start create post");
+            const contentFormServer = `<%-  content %>`;
+            const contentEditable = document.getElementById("content-editable");
+            const content = document.getElementById("content");
+            const btnCreate = document.getElementById("btn-create-post");
+            const placeholder = document.querySelector(".placeholder");
+            if (contentFormServer) {
+                placeholder.style.display = "none";
+                btnCreate.removeAttribute("disabled");
+                contentEditable.focus();
+            } else {
+                const formAddPost = document.getElementById("form-add-post");
+                btnCreate.onclick = (e) => {
+                    e.preventDefault();
+                    content.value = addDivTagToFirstLine(content.value);
+                    formAddPost.submit();
+                };
+            }
+            // contentEditable
+
+            contentEditable.addEventListener("keydown", (event) => {
+                if (event.key === "Delete" || event.code === "Delete") {
+                    event.preventDefault();
+                }
+            });
+            const handleChangeInput = function () {
+                contentEditable.style.height = "auto";
+                contentEditable.style.height =
+                    contentEditable.scrollHeight + "px";
+                if (contentEditable.textContent.trim().length === 0) {
+                    placeholder.style.display = "block";
+                    btnCreate.setAttribute("disabled", "true");
+                    contentEditable.classList.remove("converted");
+                } else {
+                    placeholder.style.display = "none";
+                    btnCreate.removeAttribute("disabled");
+                }
+
+                content.value = contentEditable.innerHTML;
+            };
+            contentEditable.addEventListener("input", handleChangeInput);
+
+            contentEditable.addEventListener("paste", (event) => {
+                event.preventDefault(); // Prevent the default paste behavior
+
+                // Access the clipboard data
+                const clipboardData = (event.originalEvent || event)
+                    .clipboardData;
+
+                // Check if the clipboard data contains an image
+                if (clipboardData && clipboardData.types.includes("Files")) {
+                    const files = clipboardData.files;
+
+                    for (const file of files) {
+                        if (file.type.startsWith("image/")) {
+                            // Image detected in clipboard, prevent the default paste behavior
+                            event.preventDefault();
+                            alert("Pasting images is not allowed.");
+                            break;
+                        }
+                    }
+                }
+                const pastedText = clipboardData.getData("text/plain");
+                const formattedText = `<div>${pastedText}</div>`;
+                document.execCommand("insertHTML", false, formattedText);
+            });
+
+            // emojis
+            const handleSelectEmoji = (emoji) => {
+                contentEditable.innerHTML += emoji.native;
+                handleChangeInput();
+            };
+            const pickerOptions = {
+                onEmojiSelect: handleSelectEmoji,
+                autoFocusSearch: true,
+                emojiSize: 20,
+                emojiButtonSize: 26,
+                previewPosition: "none",
+            };
+            const picker = new EmojiMart.Picker(pickerOptions);
+
+            $("#dropdown-emoji").append(picker);
+
+            // image
+            const openFileDialog = () => {
+                imagesInput.click();
+            };
+            const imagePreviews = document.querySelector(".imagePreviews");
+            const imagesInput = document.getElementById("imagesInput");
+            const btnOpenFile = document.getElementById("btn-open-file");
+
+            let imagesFile = [];
+            let previewFiles = [];
+            const renderImagePreviews = (array) => {
+                console.log(array);
+
+                if (array.length === 0) {
+                    btnCreate.setAttribute("disabled", "true");
+
+                    imagePreviews.classList.remove("wrapper");
+                    return;
+                }
+                if (array.length === 1) {
+                    $(".images-preview-warming").html(`
+                        <div class="add-file-warming text-warning" >
+                            Make sure you select multiple files in the same time
+                            </div>
+
+                    `);
+                    setTimeout(() => {
+                        $(".add-file-warming").remove();
+                    }, 3000);
+                }
+                imagePreviews.innerHTML = ""; // Clear previous previews
+                imagePreviews.style.gridTemplateColumns = `repeat(${getTemplate(
+                    array.length
+                )},1fr)`;
+                if (array.length > 4) {
+                    btnOpenFile.setAttribute("disabled", "true");
+                } else {
+                    btnOpenFile.removeAttribute("disabled");
+                    btnCreate.removeAttribute("disabled");
+                }
+
+                array.forEach((url, index) => {
+                    $(".imagePreviews").append(`
+                    <figure class="gallery__item--${index + 1}">
+                            <button class="btn-icon btn-remove" onclick="handleRemoveImage(${index})" type="button">
+                                <i class="fas fa-xmark fa-lg"></i> 
+                            </button>
+                            <img src="${url}" alt="image preview class="rounded" ${
+                        index + 1
+                    }" />
+                        </figure>
+                    `);
+                });
+            };
+            const handleRemoveImage = (index) => {
+                imagesFile = imagesFile.filter((_, i) => i !== index);
+                previewFiles = previewFiles.filter((_, i) => i !== index);
+                renderImagePreviews(previewFiles);
+            };
+            imagesInput.addEventListener("change", async function (event) {
+                // reset preview Files
+                previewFiles = [];
+                const files = event.target.files;
+                console.log({ files });
+                if (!files.length > 0) return;
+
+                imagePreviews.classList.add("wrapper");
+                imagesFile = [...files];
+                console.log({ imagesFile });
+                document
+                    .getElementById("btn-open-file")
+                    .removeAttribute("disabled");
+                for (const file of imagesFile) {
+                    const dataUrl = await readAsDataURL(file);
+                    previewFiles.push(dataUrl);
+                }
+                renderImagePreviews(previewFiles);
+            });
+            function readAsDataURL(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+            const getTemplate = (length) => {
+                if (length >= 3) return (length - 1) * 2;
+                return length * 2;
+            };
+
+            const addDivTagToFirstLine = (innerHTML) => {
+                const lines = innerHTML.split("<div>");
+                let firstLine = lines[0];
+                if (!firstLine || firstLine.includes("</div>")) {
+                    return innerHTML;
+                } else {
+                    firstLine = `<div>${firstLine}</div>`;
+                    const newLines = [firstLine, ...lines.slice(1)];
+                    return newLines.join("<div>").replace("<div></div>", "");
+                }
+            };
+            // btnCreate.onclick = handleCreatePost;
+            const btnClose = document.getElementById("btn-close");
+            const handleClose = () => {
+                window.location.href = "/";
+            };
+            btnClose.onclick = handleClose;
+            const handleNavigateToEmbedHTMLFILE = () => {
+                window.location.href = "/posts/add/html";
+            };
+            $("#btn-use-html-file").click(() => {
+                if ($("#content").val() || imagesFile.length > 0) {
+                    $("#staticBackdrop").modal("show");
+                } else {
+                    handleNavigateToEmbedHTMLFILE();
+                }
+            });
+            const handleCleanUp = () => {
+                imagesFile = [];
+                previewFiles = [];
+                content.value = "";
+                contentEditable.innerHTML = "";
+            };
+            $("#btn-continue").click(() => {
+                handleCleanUp();
+                handleNavigateToEmbedHTMLFILE();
+            });
+        </script>
+    </body>
+</html>

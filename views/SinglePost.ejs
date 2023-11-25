@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%-include('./partials/Head') %>
+
+        <link rel="stylesheet" href="/css/createPost.css" />
+        <link rel="stylesheet" href="/css/home.css" />
+        <style>
+            .btn-back {
+                z-index: 9999;
+                position: relative;
+            }
+            .comment-btn {
+                text-transform: capitalize;
+            }
+            .comment-btn:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+            .card-comments {
+                max-height: 320px;
+                overflow: auto;
+            }
+            @media screen and (min-width: 768px) {
+                .btn-back {
+                    position: fixed;
+                    top: 24px;
+                    left: 24px;
+                }
+            }
+        </style>
+        <%- include("./partials/Script.ejs") %>
+    </head>
+
+    <body>
+        <div class="btn-back">
+            <button
+                class="btn btn-outline-secondary"
+                onclick="window.history.back()"
+            >
+                <i class="bi bi-arrow-bar-left"></i>
+            </button>
+        </div>
+        <div class="container-fluid position-relative">
+            <div class="row">
+                <div
+                    class="col-12 col-md-9 mx-sm-auto col-lg-7 px-sm-4 min-vh-100 pt-sm-4 px-0"
+                >
+                    <div class="card">
+                        <div
+                            class="d-flex is-align-items-center justify-content-between p-3 pb-2"
+                        >
+                            <div class="d-flex is-align-items-center gap-2">
+                                <figure class="image is-40x40">
+                                    <% if(post.userId?.avatar?.url){ %>
+                                    <img
+                                        class="is-rounded"
+                                        src="<%=post.userId?.avatar?.url%>"
+                                    />
+                                    <% } else{ %>
+                                    <span class="temp-image">
+                                        <span class="temp-alt">
+                                            <%= post.userId.displayName[0] %>
+                                        </span>
+                                    </span>
+                                    <% } %>
+                                </figure>
+                                <div>
+                                    <h3
+                                        class="subtitle fw-bold is-6"
+                                        style="color: inherit"
+                                    >
+                                        <a href="#">
+                                            <%= post.userId.displayName %>
+                                        </a>
+                                    </h3>
+                                    <h6
+                                        class="title is-6 fw-light created-at"
+                                        style="color: inherit"
+                                    >
+                                        <%= post.fromNow %>
+                                    </h6>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="btn-group dropend">
+                                    <button
+                                        class="btn-icon dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        <i class="fas fa-ellipsis-vertical"></i>
+                                    </button>
+
+                                    <ul class="dropdown-menu">
+                                        <% if(post.isBookmarked){ %>
+
+                                        <li>
+                                            <button class="dropdown-item">
+                                                <i
+                                                    class="bi mr-2 bi-bookmark-fill"
+                                                ></i
+                                                >Remove from bookmark
+                                            </button>
+                                        </li>
+                                        <% } else{ %>
+                                        <li>
+                                            <form
+                                                method="post"
+                                                action="/bookmark/add/<%= post._id  %>"
+                                            >
+                                                <button
+                                                    class="dropdown-item"
+                                                    type="submit"
+                                                >
+                                                    <i
+                                                        class="bi mr-2 bi-bookmark"
+                                                    ></i>
+                                                    Bookmark
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <% } %>
+
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+
+                                        <% if
+                                        (currentUser._id.equals(post.userId._id)
+                                        ) { %>
+
+                                        <li>
+                                            <a
+                                                href="/posts/edit/<%= post._id %>"
+                                            >
+                                                <button
+                                                    class="dropdown-item pr-0"
+                                                >
+                                                    <i
+                                                        class="fas fa-pen mr-2"
+                                                    ></i>
+                                                    Edit this post
+                                                </button>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <button
+                                                class="dropdown-item pr-0 delete-post"
+                                                data-post-id="<%= post._id %>"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                onclick="handleDeletePost('<%= post._id%>')"
+                                            >
+                                                <i
+                                                    class="fas fa-trash mr-2"
+                                                ></i>
+                                                Delete this post
+                                            </button>
+                                        </li>
+
+                                        <% } %>
+                                        <li>
+                                            <button class="dropdown-item pr-0">
+                                                Hide this post
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item pr-0">
+                                                Report this post
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% if (post.content) { %>
+                        <div class="card-body pt-0 post-content">
+                            <%- post.content %>
+                        </div>
+
+                        <% } %> <% if (post.images?.length> 0) { %>
+                        <div
+                            class="gallery"
+                            data-preview-length="<%= post.images.length %>"
+                        >
+                            <% post.images.forEach((image,index)=> { %>
+                            <figure class="gallery__item--<%= index + 1 %>">
+                                <img
+                                    src="<%= image.url %>"
+                                    alt="<%= image.id %>"
+                                />
+                            </figure>
+
+                            <% }) %>
+                        </div>
+
+                        <% } %>
+                        <div class="card-footer">
+                            <div
+                                class="d-flex align-items-center justify-content-between w-100 gap-2"
+                            >
+                                <div class="d-flex gap-1 align-items-center">
+                                    <form
+                                        action="/posts/post/<%= post._id %>/like"
+                                        method="post"
+                                    >
+                                        <input
+                                            type="text"
+                                            value=" <%= post.numberOfLikes %>"
+                                            name="numberOfLikes"
+                                            hidden
+                                            readonly
+                                        />
+                                        <button class="btn-icon" type="submit">
+                                            <% if(post.isLiked){ %>
+                                            <i class="bi bi-heart-fill"></i>
+                                            <% } else{ %>
+                                            <i class="bi bi-heart"></i>
+                                            <% } %>
+                                        </button>
+                                    </form>
+                                    <%= post.numberOfLikes %>
+                                </div>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <button
+                                        class="btn-icon"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#comments<%= post._id %>"
+                                        aria-expanded="false"
+                                        aria-controls="comments<%= post._id %>"
+                                    >
+                                        <i class="bi bi-chat"></i>
+                                    </button>
+                                    <%= post.numberOfComments %>
+                                </div>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <button class="btn-icon">
+                                        <i class="bi bi-upload"></i>
+                                    </button>
+                                    Repost
+                                </div>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <button class="btn-icon">
+                                        <i class="bi bi-bar-chart"></i>
+                                    </button>
+                                    View
+                                </div>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <button class="btn-icon">
+                                        <i class="bi bi-share"></i>
+                                    </button>
+                                    Share
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="comments<%= post._id %>">
+                            <div class="card">
+                                <div class="card-body card-comments">
+                                    <%-
+                                    include("./partials/Comments.ejs",{comments:
+                                    comments,post: post}) %>
+                                </div>
+
+                                <div class="card-footer">
+                                    <%-
+                                    include("./partials/FormComment.ejs",{post:post,commentId:null})
+                                    %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

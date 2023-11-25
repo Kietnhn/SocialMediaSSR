@@ -1,0 +1,172 @@
+<% if (typeof posts !== 'undefined' && typeof currentUser !== 'undefined') { %>
+<% if(posts.length > 0){ %> <% posts.forEach(post => { %>
+
+<div class="card mb-3">
+    <div class="d-flex is-align-items-center justify-content-between p-3 pb-2">
+        <div class="d-flex is-align-items-center gap-2">
+            <a href="/profile/user/<%= post.userId._id %>">
+                <figure class="image is-40x40">
+                    <img class="is-rounded box mb-0"
+                    src="<%=post.userId.avatar?.url || "/image/no-avatar.png"%>"
+                    style="height: 100%;object-fit: cover" />
+                </figure>
+            </a>
+            <div>
+                <h3 class="subtitle fw-bold is-6" style="color: inherit">
+                    <a href="/profile/user/<%= post.userId._id %>"
+                        ><%= post.userId.displayName %></a
+                    >
+                </h3>
+                <h6
+                    class="title is-6 fw-light created-at"
+                    style="color: inherit"
+                >
+                    <%= post.fromNow %>
+                </h6>
+            </div>
+        </div>
+        <div>
+            <div class="btn-group dropend">
+                <button
+                    class="btn-icon dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </button>
+
+                <ul class="dropdown-menu">
+                    <% if(post.isBookmarked){ %>
+
+                    <li>
+                        <button class="dropdown-item">
+                            <i class="bi mr-2 bi-bookmark-fill"></i>Remove from
+                            bookmark
+                        </button>
+                    </li>
+                    <% } else{ %>
+                    <li>
+                        <form
+                            method="post"
+                            action="/bookmark/add/<%= post._id  %>"
+                        >
+                            <button class="dropdown-item" type="submit">
+                                <i class="bi mr-2 bi-bookmark"></i> Bookmark
+                            </button>
+                        </form>
+                    </li>
+                    <% } %>
+
+                    <li><hr class="dropdown-divider" /></li>
+
+                    <% if (currentUser._id.equals(post.userId._id) ) { %>
+
+                    <li>
+                        <a href="/posts/edit/<%= post._id %>">
+                            <button class="dropdown-item pr-0">
+                                <i class="fas fa-pen mr-2"></i> Edit this post
+                            </button>
+                        </a>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item pr-0 delete-post"
+                            data-post-id="<%= post._id %>"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            onclick="handleDeletePost('<%= post._id%>')"
+                        >
+                            <i class="fas fa-trash mr-2"></i> Delete this post
+                        </button>
+                    </li>
+
+                    <% } %>
+                    <li>
+                        <button class="dropdown-item pr-0">
+                            Hide this post
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item pr-0">
+                            Report this post
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <a class="card-wrapper" href="/posts/post/<%= post._id %>">
+        <% if (post.content) { %>
+        <div class="card-body pt-0 post-content"><%- post.content %></div>
+
+        <% } %> <% if (post.images?.length > 0) { %>
+        <div
+            class="imagePreviews"
+            data-preview-length="<%= post.images.length %>"
+        >
+            <% post.images.forEach((image,index) => { %>
+            <figure class="gallery__item--<%= index + 1 %>">
+                <img src="<%= image.url %>" alt="<%= image.id %>" />
+            </figure>
+
+            <% }) %>
+        </div>
+
+        <% } %>
+    </a>
+    <div class="card-footer">
+        <div
+            class="d-flex align-items-center justify-content-between w-100 gap-2"
+        >
+            <div class="d-flex gap-1 align-items-center">
+                <form action="/posts/post/<%= post._id %>/like" method="post">
+                    <input
+                        type="text"
+                        value=" <%= post.numberOfLikes %>"
+                        name="numberOfLikes"
+                        hidden
+                        readonly
+                    />
+                    <button class="btn-icon" type="submit">
+                        <% if(post.isLiked){ %>
+                        <i class="bi bi-heart-fill"></i>
+                        <% } else{ %>
+                        <i class="bi bi-heart"></i>
+                        <% } %>
+                    </button>
+                </form>
+                <%= post.numberOfLikes %>
+            </div>
+            <div class="d-flex gap-1 align-items-center">
+                <a href="/posts/post/<%= post._id %>">
+                    <button class="btn-icon" type="button">
+                        <i class="bi bi-chat"></i>
+                    </button>
+                </a>
+                <%= post.numberOfComments %>
+            </div>
+            <div class="d-flex gap-1 align-items-center">
+                <button class="btn-icon">
+                    <i class="bi bi-upload"></i>
+                </button>
+                Repost
+            </div>
+            <div class="d-flex gap-1 align-items-center">
+                <button class="btn-icon">
+                    <i class="bi bi-bar-chart"></i>
+                </button>
+                View
+            </div>
+            <div class="d-flex gap-1 align-items-center">
+                <button class="btn-icon">
+                    <i class="bi bi-share"></i>
+                </button>
+                Share
+            </div>
+        </div>
+    </div>
+</div>
+
+<% }) %> <% } else{ %>
+<h1>Empty posts</h1>
+<% } %> <% } %>

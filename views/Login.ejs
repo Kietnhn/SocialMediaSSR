@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include("./partials/Head.ejs") %>
+
+        <link rel="stylesheet" href="/css/login.css" />
+        <link rel="stylesheet" href="/css/createPost.css" />
+    </head>
+    <body>
+        <div class="fullscreen">
+            <div class="login__container">
+                <div
+                    class="login__wrapper box row flex-row justify-content-between"
+                >
+                    <div class="col-6">
+                        <figure class="image">
+                            <img
+                                width="100%"
+                                height="100%"
+                                src="/image/android-chrome-512x512.png"
+                                alt="logo"
+                            />
+                        </figure>
+                    </div>
+                    <div class="login__form__wrapper col-6">
+                        <h2 class="title is-2">Welcome back</h2>
+
+                        <h2 class="subtitle is-3">Login now</h2>
+
+                        <form
+                            class="row g-2 w-100"
+                            id="login-form"
+                            method="POST"
+                            action="/user/login"
+                        >
+                            <div class="col-12">
+                                <label for="email" class="form-label"
+                                    >Email</label
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control <%= errors.find(e => e.path === 'email') ? 'is-invalid' : '' %>"
+                                    id="email"
+                                    name="email"
+                                    aria-describedby="email-feeadback"
+                                    value="<%= oldInputs.email %>"
+                                />
+
+                                <div
+                                    id="email-feeadback"
+                                    class="invalid-feedback"
+                                >
+                                    <%= errors.find(e => e.path ===
+                                    'email')?.msg || '' %>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="password" class="form-label"
+                                    >Password</label
+                                >
+                                <div
+                                    class="position-relative input-group form-input"
+                                >
+                                    <input
+                                        type="password"
+                                        class="form-control <%= errors.find(e => e.path === 'password') ? 'is-invalid' : '' %>"
+                                        id="password"
+                                        name="password"
+                                        aria-describedby="passwordFeedback"
+                                        value="<%= oldInputs.password %>"
+                                    />
+                                    <span class="input-group-text">
+                                        <button
+                                            class="btn-icon toggle-password"
+                                            type="button"
+                                        >
+                                            <i
+                                                class="bi bi-eye-fill bi-eye-slash-fill"
+                                            ></i>
+                                        </button>
+                                    </span>
+
+                                    <div
+                                        id="passwordFeedback"
+                                        class="invalid-feedback"
+                                    >
+                                        <%= errors.find(e => e.path ===
+                                        'password')?.msg || '' %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <button
+                                    class="btn btn-primary w-100"
+                                    id="btn-login"
+                                >
+                                    Login
+                                </button>
+                            </div>
+                            <p>
+                                Don't have account yet?
+                                <a href="/user/register">Register</a> now
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script>
+            const handleChange = (e) => {
+                e.target.classList.remove("is-invalid");
+            };
+            $(".form-control").change(handleChange);
+            $(".form-check-input").change(handleChange);
+            const findParent = (target) => {
+                if (target.classList.contains("form-input")) {
+                    return target;
+                }
+                return findParent(target.parentElement);
+            };
+            const handleTogglePassword = (e) => {
+                const target = e.target;
+                const parent = findParent(target);
+                const input = parent.querySelector(".form-control");
+                const icon = parent.querySelector(".toggle-password i");
+                input.type = input.type === "password" ? "text" : "password";
+                icon.classList.toggle(
+                    "bi-eye-slash-fill",
+                    input.type === "password"
+                );
+            };
+            $(".toggle-password").click(handleTogglePassword);
+        </script>
+    </body>
+</html>
